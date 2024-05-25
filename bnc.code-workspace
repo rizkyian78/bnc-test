@@ -1,0 +1,44 @@
+{
+	"folders": [
+		{
+			"name": "bnc",
+			"path": "."
+		},
+		{
+			"name": "backend",
+			"path": "backend"
+		},
+		{
+			"name": "frontend",
+			"path": "frontend"
+		},
+		{
+			"name": "worker-email",
+			"path": "worker-email"
+		}
+	],
+	"settings": {
+		"i18n-ally.localesPaths": [
+			"demoshop/static/locales"
+		],
+		"[typescript]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode",
+			"editor.formatOnSave": true,
+			"editor.tabSize": 2
+		},
+		"[typescriptreact]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode",
+			"editor.formatOnSave": true,
+			"editor.tabSize": 2
+		},
+		"[go]": {
+			"editor.insertSpaces": false,
+			"editor.defaultFormatter": "golang.go",
+			"editor.formatOnSave": true,
+			"editor.codeActionsOnSave": {
+				"source.organizeImports": "explicit"
+			},
+			"editor.suggest.snippetsPreventQuickSuggestions": false
+		}
+	}
+}
