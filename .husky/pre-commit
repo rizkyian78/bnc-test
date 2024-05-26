@@ -1,0 +1,14 @@
+#!/bin/sh
+. "$(dirname "$0")/husky.sh"
+
+# hook arguments
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+
+PATTERN="master"
+
+if [[ ${BRANCH} =~ $PATTERN ]]; then
+  echo "ERROR! violating rule "
+  echo 'Please do not push into any master branch, Please use jira ticket when creating branch';
+  echo "example: <project_name>-<ticket_number>"
+  exit 1;
+fi

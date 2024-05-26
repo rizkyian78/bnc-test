@@ -13,4 +13,8 @@ export default () => ({
     secret: process.env.JWT_SECRET || 'shh',
     expired: process.env.JWT_TOKEN_EXPIRED || '24h',
   },
+  app: {
+    originHost: process.env.FRONTEND_HOST,
+    port: process.env.PORT,
+  },
 });

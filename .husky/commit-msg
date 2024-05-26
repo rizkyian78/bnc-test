@@ -1,0 +1,20 @@
+#!/bin/bash
+. "$(dirname "$0")/husky.sh"
+
+COMMIT_MSG="$(cat "$1")"
+PATTERN="([A-Z][A-Z0-9]+)"
+
+if [[ ! ${COMMIT_MSG} =~ $PATTERN ]]; then
+  echo ""
+  echo "     ERROR! violating rule: Bad commit message. "
+  echo "     '$COMMIT_MSG' is missing JIRA Ticket Number. Please include JIRA ticket"
+  echo "     example: "
+  echo "    'feat: add new feature"
+  echo "    "
+  echo "    "
+  echo "    - adding feature in backend"
+  echo "    "
+  echo "    "
+  echo "    [XYZ-123]'"
+  exit 1
+fi

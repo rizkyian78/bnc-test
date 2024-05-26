@@ -26,7 +26,7 @@ import {
 } from 'src/schema/transaction.schema';
 import { allowedMimeTypes } from 'src/const/config';
 import { join } from 'path';
-import type { Response } from 'express';
+import type { Response, Request } from 'express';
 
 @Controller('transactions')
 export class TransactionsController {

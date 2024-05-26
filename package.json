@@ -1,0 +1,13 @@
+{
+    "dependencies": {
+      "husky": "^7.0.4"
+    },
+    "scripts": {
+      "prepare": "husky install"
+    },
+    "husky": {
+      "hooks": {
+        "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+      }
+    }
+  }
