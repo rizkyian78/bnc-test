@@ -36,7 +36,7 @@ the `rabbitmq` and `postgres`.
 run the migrations to initialize the schema for the `postgres` database. First, you need to create database manually using
 
 ```
-docker exec -it local-postgres-1 /bin/sh -c "createdb -U postgres <database_name>"
+docker exec -it <name_directory>-postgres-1 /bin/sh -c "createdb -U postgres <database_name>"
 ```
 
 Then, once you have created the databases, the next step is to run the application for backend and entities automatically loaded

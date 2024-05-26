@@ -9,7 +9,7 @@ import {
   Typography,
   notification,
 } from "antd";
-import { apiUserClient } from "@/server/mutation/user";
+import { apiUserClient } from "@/server/mutation/api";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import ApiErrorParser from "@/utils/ApiErrorParser";
 import { useRouter } from "next/navigation";

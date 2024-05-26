@@ -1,7 +1,7 @@
 "use client";
 
 import WithUseQuery from "@/hoc/WrapperTanQuery";
-import { apiUserClient } from "@/server/mutation/user";
+import { apiUserClient } from "@/server/mutation/api";
 import { Button, Card, Flex, Form, Input, Select, message } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

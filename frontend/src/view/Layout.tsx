@@ -5,7 +5,7 @@ import Image from "next/image";
 import BNCLogo from "@/assets/bnc-logo.png";
 import { useRouter } from "next/navigation";
 import { useQuery } from "react-query";
-import { apiUserClient } from "@/server/mutation/user";
+import { apiUserClient } from "@/server/mutation/api";
 import Footer from "./Footer";
 
 const { Header, Content, Sider } = Layout;

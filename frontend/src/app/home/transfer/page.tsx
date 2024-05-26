@@ -2,7 +2,7 @@
 
 import { PayloadValidate, ResponsePool } from "@/model/model";
 import WithUseQuery from "@/hoc/WrapperTanQuery";
-import { apiTransactionClient } from "@/server/mutation/user";
+import { apiTransactionClient } from "@/server/mutation/api";
 import ApiErrorParser from "@/utils/ApiErrorParser";
 import UploadComponent from "@/utils/upload";
 import LayoutPage from "@/view/Layout";
@@ -45,7 +45,7 @@ function Transfer() {
 
   const props: UploadProps = {
     name: "file",
-    action: "http://localhost:3000/transactions/upload",
+    action: `${process.env.NEXT_PUBLIC_API_SERVER}/transactions/upload`,
     headers: {
       //@ts-ignore
       authorization: sessionStorage.getItem("token") as string,
