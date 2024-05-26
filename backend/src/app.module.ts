@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Credentials } from './model/credential.entity';
 import { Transactions, Users } from './model';
 import { TransactionsModule } from './controller/transactions/transactions.module';
-import { TransactionDetails } from './model/transfer-detail';
+import { TransactionDetails } from './model/transfer-detail.entity';
 
 import Config from './config/config';
 import { ConfigModule } from '@nestjs/config';
