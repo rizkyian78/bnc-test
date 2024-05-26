@@ -57,7 +57,7 @@ export default function DetailModal({ props, transactionId }: IModal) {
 
   useEffect(() => {
     refetch();
-  }, [page, limit, transactionId]);
+  }, [page, limit, transactionId, refetch]);
 
   const transaction =
     data?.data && isSuccess === undefined ? {} : data?.data.transaction;

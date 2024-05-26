@@ -50,7 +50,7 @@ function Transaction() {
 
   useEffect(() => {
     refetch();
-  }, [page, limit, filter]);
+  }, [page, limit, filter, refetch]);
 
   const datas = data?.data === undefined ? [] : data?.data.data;
 

@@ -82,7 +82,7 @@ function Home() {
 
   useEffect(() => {
     refetch();
-  }, [page, limit]);
+  }, [page, limit, refetch]);
 
   const datas = data?.data === undefined ? [] : data?.data.data;
   const status = data?.data.status;
