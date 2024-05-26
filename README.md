@@ -1,6 +1,6 @@
-# Brankas IPG
+# BNC ADMIN
 
-The Brankas IPG.
+This project created for internal BNC works whenever there is new transfer approver need to be approve or reject the transfer based on the acknowledgment of approver about the transaction
 
 ## File Structure
 
@@ -52,7 +52,7 @@ The order in which the application should be started is this way:
 
 #### Worker Mailer
 
-Simulator follows the standard way of running `go` applications, which is to
+Worker mailer follows the standard way of running `go` applications, which is to
 first initialized the config file, by doing:
 
 ```
@@ -119,18 +119,30 @@ yarn install
 git commit -m "Keep calm and commit" --allow-empty
 ```
 
-#### Connecting to Services
+### Tech Stack
 
-For some of the payment methods (megava, megaiso, megaqris), a connection to
-the Bank Mega VPN is required. Please consult the internal documentation for
-how to set up the VPN, and how to connect to those services.
+* PostgreSQL
+* RabbitMQ
+* Typescript
+* Go (at least 1.18.x)
+* Node.JS (v18.17.0) tooling (`npm, yarn`)
+* Next JS
+* Ant Design
+* Tan Query
+* NestJS
+* Husky
 
-#### Other documentation
+### Workflow
 
-Other documentation regarding how-tos, environment variables, custom settings
-are documented outside of this repository, so that we are not leaking any
-important credentials in this repo.
+* [Workflow](https://whimsical.com/bnc-2Z94b2Ht2BijvzGL1WdDNN)
+
+* [Databases](https://dbdiagram.io/d/BNC-664e2d4af84ecd1d22e2830e)
 
 #### Changes on the README
 
 If you feel like you need to propose any changes on this README documents, please feel free to do the PR
+
+
+### P.S
+
+Docker for deployment file need still configured and not done yet
