@@ -243,7 +243,7 @@ function Transaction() {
             setLimit(e.pageSize || 0);
           }}
           pagination={{
-            current: 1,
+            current: page,
             pageSize: 10,
             total: 10 * data?.data.meta.totalPages,
           }}

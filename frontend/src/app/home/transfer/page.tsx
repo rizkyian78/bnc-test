@@ -26,11 +26,12 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 
 function Transfer() {
   const [form] = Form.useForm<PayloadValidate>();
+  const [token, setToken] = useState<string>("");
   const router = useRouter();
   const [modal, contextHolder] = notification.useNotification();
   const [response, setResponse] = useState<ResponsePool>({
@@ -41,14 +42,18 @@ function Transfer() {
     totalRecord: 0,
   });
 
+  useEffect(() => {
+    const savedValue = window.sessionStorage.getItem("token");
+    setToken(savedValue as string);
+  }, []);
+
   const [type, setType] = useState<string>("immediate");
 
   const props: UploadProps = {
     name: "file",
     action: `${process.env.NEXT_PUBLIC_API_SERVER}/transactions/upload`,
     headers: {
-      //@ts-ignore
-      authorization: sessionStorage.getItem("token") as string,
+      authorization: token as string,
     },
     onChange(info) {
       if (info.file.status === "done") {

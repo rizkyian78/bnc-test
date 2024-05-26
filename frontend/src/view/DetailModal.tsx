@@ -104,7 +104,20 @@ export default function DetailModal({ props, transactionId }: IModal) {
   ];
 
   return (
-    <Modal {...props} width={1000}>
+    <Modal
+      {...props}
+      width={1000}
+      okButtonProps={{
+        style: {
+          display: "none",
+        },
+      }}
+      cancelButtonProps={{
+        style: {
+          display: "none",
+        },
+      }}
+    >
       {isLoading && <Skeleton active />}
       {isSuccess && (
         <>
