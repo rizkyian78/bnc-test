@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
 import { Roles } from 'src/const/enum';
 
 export class RegisterRequestSchema {
@@ -32,6 +32,9 @@ export class SubmitSchema {
   role: Roles;
 
   @IsNotEmpty()
+  @Matches(/^\+?[0-9]+$/, {
+    message: 'Phone number must be numeric and may start with a +',
+  })
   phoneNo: string;
 }
 

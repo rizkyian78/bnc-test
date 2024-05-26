@@ -4,12 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  SessionUser,
-  TransactionDetails,
-  Transactions,
-  Users,
-} from 'src/model';
+import { SessionUser, TransactionDetails, Transactions } from 'src/model';
 import {
   FundTransferSchema,
   SubmitTransactionSchema,
@@ -21,6 +16,7 @@ import { InstructionType, Roles, Statuses } from 'src/const/enum';
 import * as dayjs from 'dayjs';
 import { randomUUID } from 'crypto';
 import * as _ from 'lodash';
+import { monitorSqlQuery } from 'src/const/config';
 
 interface TransactionSummary {
   totalRecord: number;
@@ -35,9 +31,6 @@ export class TransactionsService {
 
     @InjectRepository(TransactionDetails)
     private transactionDetailRepository: Repository<TransactionDetails>,
-
-    @InjectRepository(Users)
-    private usersRepository: Repository<Users>,
   ) {}
   async upload(file: Express.Multer.File, user: SessionUser) {
     const data = await getJsonCSV(file.path);
@@ -47,14 +40,7 @@ export class TransactionsService {
     const transactionId = randomUUID();
 
     for (const item of data) {
-      const isExist = await this.usersRepository.exists({
-        where: {
-          corporateAccountNo: item.to_account_no,
-        },
-      });
-
       if (
-        !isExist ||
         !item.to_account_name ||
         !item.to_account_no ||
         !item.to_bank ||
@@ -66,7 +52,7 @@ export class TransactionsService {
 
     if (reject > 0) {
       return {
-        message: `After detection, there are ${data.length} record, and ${reject} records error no match account no query by issuing bank. Please reupload your resume`,
+        message: `After detection, there are ${data.length} record, and ${reject} records error no match header. Please reupload your resume`,
         ok: false,
         total: data.length,
         reject: reject,
@@ -198,25 +184,7 @@ export class TransactionsService {
       },
     });
 
-    const sqlQuery = `
-    WITH Statuses AS (
-      SELECT 'approved' AS status
-      UNION ALL
-      SELECT 'pending'
-      UNION ALL
-      SELECT 'rejected'
-  )
-  SELECT 
-      t.status,
-      CASE 
-          WHEN COUNT(t.status) < 1 THEN 0
-          ELSE COUNT(t.status)
-      END AS count
-  FROM transactions t
-  GROUP BY t.status
-`;
-
-    const data = await this.transactionRepository.query(sqlQuery);
+    const data = await this.transactionRepository.query(monitorSqlQuery);
 
     const totalPages = Math.ceil(total / limit);
 

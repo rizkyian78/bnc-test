@@ -74,12 +74,11 @@ function Register() {
           <Form.Item
             label="Corporate Account No"
             name="corporateAccountNo"
-            validateTrigger="onBlur"
             rules={[
               { required: true, message: "Please Input Corporate Account No" },
             ]}
           >
-            <Input placeholder="Validate required onBlur" />
+            <Input />
           </Form.Item>
 
           <Form.Item
@@ -110,7 +109,7 @@ function Register() {
             label="Role"
             rules={[{ required: true, message: "Please Select Role" }]}
           >
-            <Select placeholder="Select a option and change input text above">
+            <Select placeholder="Approver">
               <Select.Option value="maker">Maker</Select.Option>
               <Select.Option value="approver">Approver</Select.Option>
             </Select>
@@ -120,7 +119,11 @@ function Register() {
             name="phoneNo"
             label="Phone Number"
             rules={[
-              { required: true, message: "Please input your phone number!" },
+              {
+                required: true,
+                message: "Please input your phone number!",
+                pattern: /^[0-9]+$/,
+              },
             ]}
           >
             <Input addonBefore={"+62"} style={{ width: "100%" }} />
@@ -175,6 +178,7 @@ function Register() {
               htmlType="submit"
               style={{
                 minWidth: "100%",
+                backgroundColor: "#CAB74C",
               }}
             >
               Submit
