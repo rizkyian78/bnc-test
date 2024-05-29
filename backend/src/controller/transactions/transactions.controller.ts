@@ -60,8 +60,8 @@ export class TransactionsController {
 
   @Post('validate')
   @UseGuards(AuthGuard)
-  validate(@Body() payload: FundTransferSchema) {
-    return this.transactionsService.validate(payload);
+  validate(@Body() payload: FundTransferSchema, @Req() request: Request) {
+    return this.transactionsService.validate(payload, request['sessionUser']);
   }
 
   @Post('confirm')

@@ -8,6 +8,12 @@ export interface CSVData {
   transfer_amount: string;
 }
 
+export interface RedisSaveValue {
+  totalRecord: number;
+  totalAmount: number;
+  data: CSVData[];
+}
+
 export const getJsonCSV = async (
   filepath: string,
   noheader: boolean = false,

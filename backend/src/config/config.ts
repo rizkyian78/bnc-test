@@ -17,4 +17,9 @@ export default () => ({
     originHost: process.env.FRONTEND_HOST,
     port: process.env.PORT,
   },
+  redis: {
+    port: Number(process.env.REDIS_PORT) || 6379,
+    host: process.env.REDIS_HOST,
+    ttl: Number(process.env.REDIS_TTL) || 900,
+  },
 });

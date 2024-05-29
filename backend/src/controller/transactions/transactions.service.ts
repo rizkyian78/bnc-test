@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -10,13 +11,19 @@ import {
   SubmitTransactionSchema,
   UpdateTransactionStatusSchema,
 } from 'src/schema/transaction.schema';
-import { CSVData, getJsonCSV } from 'src/utils/sheet-reader.utils';
+import {
+  CSVData,
+  RedisSaveValue,
+  getJsonCSV,
+} from 'src/utils/sheet-reader.utils';
 import { Between, FindOptionsWhere, In, Repository } from 'typeorm';
 import { InstructionType, Roles, Statuses } from 'src/const/enum';
 import * as dayjs from 'dayjs';
 import { randomUUID } from 'crypto';
 import * as _ from 'lodash';
 import { monitorSqlQuery } from 'src/const/config';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 interface TransactionSummary {
   totalRecord: number;
@@ -31,6 +38,7 @@ export class TransactionsService {
 
     @InjectRepository(TransactionDetails)
     private transactionDetailRepository: Repository<TransactionDetails>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
   async upload(file: Express.Multer.File, user: SessionUser) {
     const data = await getJsonCSV(file.path);
@@ -60,47 +68,56 @@ export class TransactionsService {
     }
 
     // @ts-ignore
-    const result = this.summarizeTransactions(data, transactionId);
-
-    const transaction = await this.transactionRepository.save({
-      id: transactionId,
-      transferAmount: result.totalAmount,
-      transferRecord: result.totalRecord,
-      fromUser: user.userName,
-      fromAccount: user.corporateAccountNo,
-      status: Statuses.CREATED,
-    });
+    const result = this.summarizeTransactions(data);
+    const redisValue: RedisSaveValue = {
+      totalRecord: result.totalRecord,
+      totalAmount: result.totalAmount,
+      data,
+    };
+    await this.cacheManager.set(transactionId + '_upload', redisValue);
 
     return {
       message: `After detection, there are ${result.totalRecord} record, the total Transfer amount is  Rp.${result.totalAmount}`,
-      transactionId: transaction.id,
+      transactionId,
       ok: true,
       ...result,
       data,
     };
   }
 
-  async validate(payload: FundTransferSchema) {
-    const transaction = await this.transactionRepository.findOne({
-      where: {
-        id: payload.transactionId,
-      },
-    });
+  async validate(payload: FundTransferSchema, user: SessionUser) {
+    const transactionDetails: RedisSaveValue = await this.cacheManager.get(
+      payload.transactionId + '_upload',
+    );
 
-    if (![Statuses.CREATED].includes(transaction.status)) {
-      throw new BadRequestException('Transaction already processed');
-    }
-
-    if (!transaction) {
+    if (!transactionDetails) {
       throw new NotFoundException('Transaction Not found');
     }
 
     if (
-      transaction.transferAmount !== payload.transferAmount ||
-      transaction.transferRecord !== Number(payload.totalRecord)
+      transactionDetails.totalAmount !== Number(payload.transferAmount) ||
+      transactionDetails.totalRecord !== Number(payload.totalRecord)
     ) {
       throw new BadRequestException('Invalid Transaction');
     }
+
+    const transaction = await this.transactionRepository.create({
+      id: payload.transactionId,
+      transferAmount: payload.transferAmount,
+      transferRecord: payload.totalRecord,
+      fromUser: user.userName,
+      fromAccount: user.corporateAccountNo,
+    });
+
+    transactionDetails.data.map((v, i) => {
+      this.transactionDetailRepository.save({
+        transactionId: payload.transactionId,
+        toAccount: v.to_account_no,
+        toAccountName: v.to_account_name,
+        toBankName: v.to_bank,
+        transferAmount: v.transfer_amount,
+      });
+    });
 
     if (payload.instructionType === InstructionType.STANDING_INSTRUCTION) {
       if (!payload.expiredDate && !payload.expiredTime) {
@@ -147,19 +164,9 @@ export class TransactionsService {
     await this.transactionRepository.save(transaction);
     return transaction;
   }
-  summarizeTransactions(
-    transactions: CSVData[],
-    uuid: string,
-  ): TransactionSummary {
+  summarizeTransactions(transactions: CSVData[]): TransactionSummary {
     return transactions.reduce(
       (summary, transaction) => {
-        this.transactionDetailRepository.save({
-          transactionId: uuid,
-          toAccount: transaction.to_account_no,
-          toAccountName: transaction.to_account_name,
-          toBankName: transaction.to_bank,
-          transferAmount: transaction.transfer_amount,
-        });
         return {
           totalRecord: summary.totalRecord + 1,
           totalAmount:
